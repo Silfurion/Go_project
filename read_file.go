@@ -13,7 +13,7 @@ import (
 func main() {
 
 
-var tab [][]int
+var tab [][]float64
 var count = 0
 var length = 0
 
@@ -21,7 +21,7 @@ var length = 0
  file, err :=os.Open("test.txt") 
     if err != nil {
         fmt.Println("File reading error", err)
-        return
+        return nil
     }
     reader := bufio.NewReader(file)
      
@@ -67,11 +67,12 @@ var length = 0
 
      }
      fmt.Println(tab)
+     return tab
 }
-func ConvertToInt(tab []string) []int{
-  var intertab []int
+func ConvertToInt(tab []string) []float64{    // modifier nom 
+  var intertab []float64
   for  i := 0 ; i<len(tab) ; i++ {
-    intertabf,err := strconv.Atoi(tab[i])
+    intertabf,err := strconv.ParseFloat(tab[i],64)
     if err != nil {
       fmt.Println(err)
     }
@@ -80,7 +81,6 @@ func ConvertToInt(tab []string) []int{
   return intertab
   
 }
-
 
 
 
