@@ -3,11 +3,8 @@ package main
 //import "fmt"
 import (
 	"math"
-  "fmt"
-  "bufio"
-  "os"
-  "strings"
-  "strconv"
+	"./read_file"
+	"./WriteFile"
 )
 
 func dijkstra(tree [][]float64, x int) (sample[][]float64) {
@@ -100,135 +97,10 @@ func printTree(tree [][][]float64){
 	}
 }
 
-func ReadFile() [][]float64 {
-
-
-var tab [][]float64
-var count = 0
-var length = 0
-
-
- file, err :=os.Open("test.txt") 
-    if err != nil {
-        fmt.Println("File reading error", err)
-        return nil
-    }
-    reader := bufio.NewReader(file)
-     
-    for {
-      if count == 0 {
-        read, isPrefix, err:= reader.ReadLine()
-        if isPrefix {
-          fmt.Println("error")
-          break
-        }
-        if err != nil{
-          fmt.Println(err)
-          break
-        }
-        length,err = strconv.Atoi(string(read))
-        if err != nil {
-          fmt.Println(err)
-          break
-        }
-        count++
-      }
-      if count < int(length)+1 {
-        read,isPrefix,err := reader.ReadLine()
-        if isPrefix  {
-          break
-        }
-        if err != nil {
-          fmt.Println(err)
-          break
-        }
-        intertab := strings.Split(string(read)," ")
-        intertabf := ConvertToInt(intertab)
-        tab = append(tab,intertabf)
-        if err != nil {
-          fmt.Println(err)
-          break
-        }
-        count++
-      }else {
-        break
-      }
-
-     }
-     fmt.Println(tab)
-     return tab
-}
-func ConvertToInt(tab []string) []float64{
-  var intertab []float64
-  for  i := 0 ; i<len(tab) ; i++ {
-    intertabf,err := strconv.ParseFloat(tab[i],64)
-    if err != nil {
-    	if tab[i] == "inf" {
-    		intertabf = math.Inf(1)
-    	
-    	}else { 	
-        	fmt.Println(err)
-        }
-    }
-    intertab = append(intertab,intertabf)
-  }
-  return intertab
-  
-}
-func ConvertToString(tab [][]float64) string {
-	var intertab []string
-	for i := 0 ; i<len(tab) ; i++ {
-		intertabf :=  strconv.FormatFloat(tab[i][0],'G',-1,64)+";"+strconv.FormatFloat(tab[i][1],'G',-1,64)
-		intertab = append(intertab,intertabf)
-
-	}
-	fmt.Println(intertab)
-	return ConvertTabStringToString(intertab)
-}
-
-func ConvertTabStringToString (tabs []string) string {
-	var str string 
-	for i:= 0 ; i<len(tabs)-1 ;i++ {
-		str+=tabs[i]+" "
-	}
-	str+=tabs[len(tabs)-1]
-	str+="\n"
-	fmt.Println(str)
-	return str
-
-
-
-}
-
-func WriteFile (tab [][][]float64){
-	file,err := os.Create("./End.txt")
-	if err != nil {
-		fmt.Println("File reading error", err) 
-	}
-	writer := bufio.NewWriter(file)
-	tabstr,err := writer.WriteString(strconv.FormatInt(int64(len(tab)),16)+"\n")
-	fmt.Println(tabstr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for i := 0 ; i<len(tab) ; i++ {
-		tabstr,err :=writer.WriteString(ConvertToString(tab[i]))
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Println(tabstr)
-		err2 :=writer.Flush()
-		if err2 != nil {
-			fmt.Println(err2)
-		}
-	}
-
-}
-
 
 func main(){
 	//var tree = [][]float64{{0, 2, math.Inf(1), math.Inf(1), math.Inf(1)},	{2, 0, 3, 10, math.Inf(1)}, {math.Inf(1), 3, 0, math.Inf(1), 1}, {math.Inf(1), 10, math.Inf(1), 0, 1}, {math.Inf(1), math.Inf(1), 1, 1, 0} }
-	var tree = ReadFile()
+	var tree = read_file.ReadFile()
 	
 	tokens := make(chan int, len(tree))
 	done := make(chan string, len(tree))
@@ -256,6 +128,6 @@ func main(){
 		}
 	}
 	result := loadData(tree, data)
-	WriteFile(result)
+	WriteFile.WriteFile(result)
 	printTree(result)
 }
